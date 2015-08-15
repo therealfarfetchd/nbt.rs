@@ -1,7 +1,23 @@
 [package]
 name = "nbt"
-version = "0.1.0"
+description = "A low level NBT (named binary tags) encoder and decoder library"
+version = "0.1.1"
 authors = ["Lukas Niederbremer <Lukas.Niederbremer@gmail.com>"]
+
+keywords = ["nbt"]
+license = "LGPL-2.1"
+
+include = [
+    "src/lib.rs",
+    "src/traits.rs",
+    "src/types.rs",
+    "src/util.rs",
+    "src/encode.rs",
+    "src/decode.rs",
+    "Cargo.toml"
+]
+
+documentation = "http://nullptr.eu/rsnbt/nbt/"
 
 [dependencies]
 flate2 = "*"
