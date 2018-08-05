@@ -107,6 +107,17 @@ fn read_value<R: Read>(reader: &mut R, vtype: TagType) -> Result<Tag> {
             }
 
             Ok(Tag::IntArray(ints))
+        },
+
+        TagType::LongArray => {
+            let len = read_primitive::<_, i64>(reader)?;
+            let mut ints = Vec::with_capacity(len as usize);
+
+            for _ in 0 .. len {
+                ints.push(read_primitive::<_, i64>(reader)?);
+            }
+
+            Ok(Tag::LongArray(ints))
         }
     }
 }

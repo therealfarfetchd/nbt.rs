@@ -62,6 +62,8 @@ pub enum TagType {
     ByteArray,
     /// Vector of signed 32 bit integers.
     IntArray,
+    /// Vector of signed 64 bit integers.
+    LongArray,
     /// Vector of NBT tags.
     List,
     /// Hash table of NBT tags indexed by UTF-8 strings.
@@ -83,6 +85,7 @@ impl TagType {
             9 => Some(TagType::List),
             10 => Some(TagType::Compound),
             11 => Some(TagType::IntArray),
+            12 => Some(TagType::LongArray),
             _  => None
         }
     }
@@ -100,7 +103,8 @@ impl TagType {
             TagType::String    => 8,
             TagType::List      => 9,
             TagType::Compound  => 10,
-            TagType::IntArray  => 11
+            TagType::IntArray  => 11,
+            TagType::LongArray => 12
         }
     }
 }
@@ -232,6 +236,8 @@ pub enum Tag {
     ByteArray(Vec<u8>),
     /// Vector of signed 32 bit integers.
     IntArray(Vec<i32>),
+    /// Vector of signed 64 bit integers.
+    LongArray(Vec<i64>),
     /// Vector of NBT tags.
     List(ListData),
     /// Hash table of NBT tags indexed by UTF-8 strings.
@@ -252,6 +258,7 @@ impl Tag {
             Tag::String(_)    => TagType::String,
             Tag::ByteArray(_) => TagType::ByteArray,
             Tag::IntArray(_)  => TagType::IntArray,
+            Tag::LongArray(_) => TagType::LongArray,
             Tag::List(_)      => TagType::List,
             Tag::Compound(_)  => TagType::Compound
         }

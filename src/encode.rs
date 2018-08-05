@@ -59,6 +59,14 @@ fn write_value<W: Write>(writer: &mut W, tag: &Tag) -> Result<()> {
             for i in x {
                 write_primitive(writer, *i)?;
             }
+        },
+
+        Tag::LongArray(ref x) => {
+            write_primitive(writer, x.len() as i64)?;
+
+            for i in x {
+                write_primitive(writer, *i)?;
+            }
         }
     };
 
