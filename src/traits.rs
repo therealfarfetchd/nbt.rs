@@ -80,7 +80,7 @@ fn test_tonbt() {
 }
 
 /// Trait implementable by types that can be converted from NBT tags.
-pub trait FromNbt {
+pub trait FromNbt: Sized {
     fn from_nbt(val: &Tag) -> Option<Self>;
 }
 
@@ -110,7 +110,7 @@ fromnbt_impl!(String, Tag::String);
 
 #[test]
 fn test_fromnbt() {
-    assert!(FromNbt::from_nbt(&Tag::Short(12)) == Some(12_i32));
-    assert!(FromNbt::from_nbt(&Tag::Byte(42_i8)) == Some(42_i8));
+    assert_eq!(FromNbt::from_nbt(&Tag::Short(12)), Some(12_i32));
+    assert_eq!(FromNbt::from_nbt(&Tag::Byte(42_i8)), Some(42_i8));
     assert!(<i8 as FromNbt>::from_nbt(&Tag::Int(42_i32)) == None);
 }

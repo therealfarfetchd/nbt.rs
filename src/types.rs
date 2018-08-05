@@ -189,13 +189,13 @@ impl DerefMut for CompoundData {
 
 #[test]
 fn test_aggregate() {
-    let mut list = ListData {
+    let list = ListData {
         element_type: TagType::Short,
         elements: vec![Tag::Short(1), Tag::Short(2), Tag::Short(3)]
     };
 
-    assert!(list.index_opt(0) == Some(&Tag::Short(1)));
-    assert!(list.index_opt(5) == None);
+    assert_eq!(list.index_opt(0), Some(&Tag::Short(1)));
+    assert_eq!(list.index_opt(5), None);
 
 
     let mut comp = CompoundData {
@@ -205,7 +205,7 @@ fn test_aggregate() {
     comp.insert("Foo".to_owned(), Tag::String("Bar".to_owned()));
     comp.insert("Bar".to_owned(), Tag::Short(42));
 
-    assert!(comp.index_opt("Foo") == Some(&Tag::String("Bar".to_owned())));
+    assert_eq!(comp.index_opt("Foo"), Some(&Tag::String("Bar".to_owned())));
 }
 
 /// An NBT value type.

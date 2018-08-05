@@ -16,14 +16,14 @@ pub use types::*;
 
 // Trait for encoding values to bytes
 trait Encodable {
-    fn to_bytes(&self) -> Vec<u8>;
+    fn to_bytes_nbt(&self) -> Vec<u8>;
 }
 
 macro_rules! make_encodable {
     // Encode an integral by shifting by expr, from left to right
     ($t:ty, $($n:expr),+) => {
         impl Encodable for $t {
-            fn to_bytes(&self) -> Vec<u8> {
+            fn to_bytes_nbt(&self) -> Vec<u8> {
                 vec![ $( (*self >> $n) as u8),+ ]
             }
         }
@@ -33,8 +33,8 @@ macro_rules! make_encodable {
     // i.e. transmute f32 to i32 -> i32.to_bytes()
     ($t:ty => $c:ty) => {
         impl Encodable for $t {
-            fn to_bytes(&self) -> Vec<u8> {
-                unsafe { std::mem::transmute::<$t, $c>(*self) }.to_bytes()
+            fn to_bytes_nbt(&self) -> Vec<u8> {
+                unsafe { std::mem::transmute::<$t, $c>(*self) }.to_bytes_nbt()
             }
         }
     };
@@ -52,7 +52,7 @@ make_encodable!(f64 => i64);
 macro_rules! make_decodable {
     ($t:ty, $s:expr, $($n:expr),+) => {
         impl Decodable for $t {
-            fn from_bytes(d: &[u8]) -> Option<Self> {
+            fn from_bytes_nbt(d: &[u8]) -> Option<Self> {
                 if d.len() != $s {
                     return None;
                 }
@@ -64,8 +64,8 @@ macro_rules! make_decodable {
 
     ($t:ty => $c:ty) => {
         impl Decodable for $t {
-            fn from_bytes(d: &[u8]) -> Option<Self> {
-                match <$c as Decodable>::from_bytes(d) {
+            fn from_bytes_nbt(d: &[u8]) -> Option<Self> {
+                match <$c as Decodable>::from_bytes_nbt(d) {
                     Some(x) => Some(unsafe { std::mem::transmute(x) }),
                     None    => None
                 }
@@ -75,8 +75,8 @@ macro_rules! make_decodable {
 }
 
 // Trait for decoding values from bytes
-trait Decodable {
-    fn from_bytes(d: &[u8]) -> Option<Self>;
+trait Decodable: Sized {
+    fn from_bytes_nbt(d: &[u8]) -> Option<Self>;
 }
 
 make_decodable!(i8,  1, 0);
@@ -89,6 +89,6 @@ make_decodable!(f64 => i64);
 
 #[test]
 fn test_encode_decode() {
-    assert_eq!(Some(0x1A2B_i16), i16::from_bytes(&0x1A2B_i16.to_bytes()));
-    assert_eq!(Some(-3.14_f32), f32::from_bytes(&(-3.14_f32).to_bytes()));
+    assert_eq!(Some(0x1A2B_i16), i16::from_bytes_nbt(&(0x1A2B_i16).to_bytes_nbt()));
+    assert_eq!(Some(-3.14_f32), f32::from_bytes_nbt(&(-3.14_f32).to_bytes_nbt()));
 }
